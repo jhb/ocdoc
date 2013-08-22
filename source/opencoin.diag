@@ -1,0 +1,75 @@
+seqdiag {
+    Alice; Bob; Issuer;
+
+    Alice -> Issuer [label='request cdd serial',
+                     leftnote='request cdd serial
+                               ...'];
+    Alice <- Issuer [label='response cdd serial',
+                     rightnote='response cdd serial
+                                ---
+                                cdd_serial'];
+
+    Alice -> Issuer [label='request cdd',
+                     leftnote='request cdd
+                               ---
+                               cdd_serial'];
+    Alice <- Issuer [label='response cdd',
+                     rightnote='response cdd
+                                ---
+                                cdd'];
+
+    Alice -> Issuer [label='request mint keys',
+                     leftnote='request mint keys
+                               ---
+                               mint_key_ids  [or]
+                               denominations'];
+    Alice <- Issuer [label='response mint keys',
+                     rightnote='response mint keys
+                                ---
+                                keys']
+
+    Alice ->> Alice [label='create payloads']
+
+
+    Alice ->> Alice [label='blinds']
+    
+    
+    Alice -> Issuer [label='request validation',
+                     leftnote='request validation
+                               ---
+                               auth_info
+                               blinds']; 
+    Alice <- Issuer [label='response minting', 
+                     rightnote='response minting:
+                                ---
+                                blind_signatures',];
+    
+    Alice ->> Alice [label='unblinds'];
+
+    Alice -> Bob [label='send coins',
+                  leftnote='send coins
+                            ---
+                            subject
+                            coins']; 
+    Alice <-- Bob [label='received coins'];
+
+    Bob -> Issuer [label='request renewal',
+                   leftnote='request validation
+                             ---
+                             coins
+                             blinds']; 
+
+    Bob <- Issuer [label='response minting', 
+                   rightnote='response minting:
+                              ---
+                              blind_signatures',];
+
+
+    Bob -> Issuer [label='request invalidation',
+                   leftnote='request invalidation
+                             ---
+                             auth_info
+                             coins']; 
+    Bob <- Issuer [label='response invalidation'];
+
+}
