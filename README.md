@@ -1,0 +1,4 @@
+ocdoc
+=====
+
+opencoin documentation
