@@ -301,16 +301,15 @@ Rules
       the CDD should use additional info field]]
 
 
-Issuer side ontainers
-=====================
+Issuer side containers
+======================
 
 
 Public Keys
 -----------
 
 Even though the actual public key definitions are specified somewhere else,
-we want to give the format in the example of RSA, because thats what we use
-in the examples below.
+the examples are given using RSA, because thats what we use in the examples below.
 
 Public Key structure
 ~~~~~~~~~~~~~~~~~~~~
@@ -362,8 +361,8 @@ struct: CDD  = {
     
     cdd location = URL
         This is not an identifier. This URL is required to be 
-        embedded in payloads. DOES IT NEED TO BE UNIQUE FOR EACH CDD
-        AND VERSION?
+        embedded in payloads. 
+        (DOES IT NEED TO BE UNIQUE FOR EACH CDD AND VERSION?)
       
     cdd serial number = positive integer, incremental 
         Purpose is to distinguish different versions of a CDD
@@ -639,6 +638,13 @@ Payload JSON example
 Blind
 -----
 
+The main element of a blind is the blinded payload hash, which is 
+created by:
+
+    * serialize the payload (using bencode [3]_)
+    * hash the serialized data
+    * apply the rsa blinding operation to the hash.
+
 
 Blind structure
 ~~~~~~~~~~~~~~~
@@ -764,6 +770,8 @@ Message Types
 Request CDD Serial
 ------------------
 
+Requests the currently active serial number.
+
 Request CDD Serial structure
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -792,6 +800,7 @@ Request CDD Serial JSON example
 Response CDD Serial
 -------------------
 
+Gives the currently active cdd serial number.
 
 Response CDD serial structure
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -833,6 +842,8 @@ Response CDD serial JSON example
 Request CDD
 -----------
 
+Request a currency description document (CDD).
+
 
 Request CDD structure
 ~~~~~~~~~~~~~~~~~~~~~
@@ -865,6 +876,8 @@ Request CDD JSON example
 
 Response CDD
 ------------
+
+Returns the Currency Description Document.
 
 
 Response CDD structure
@@ -934,6 +947,7 @@ Response CDD JSON example
 Request Mint Keys
 -----------------
 
+Request the minting keys.
 
 Request Mint Keys structure
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -975,6 +989,8 @@ Request Mint Keys JSON example
 
 Response Mint Keys
 ------------------
+
+Return the minting keys.
 
 Response Mint Keys structure
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1034,6 +1050,12 @@ Response Mint Keys JSON example
 
 Request Validation 
 ------------------
+
+Request the validation of blinds. This is the case of 
+withdrawing cash from the atm. The user needs to authenticate 
+themselfs, most likely using a method outside the opencoin protocol,
+e.g. using ssl client certificates.
+
 
 Request Validation structure
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1099,6 +1121,9 @@ Request Validation JSON example
 
 Response Minting
 ----------------
+
+Return the blind signatures for the blinds given in either
+a Request Minting or Request Renewal request.
 
 
 Response Minting structure
@@ -1166,6 +1191,7 @@ Response Minting JSON example
 Send Coins
 ----------
 
+Send coins to someone, most likely between peers.
 
 Send Coins structure
 ~~~~~~~~~~~~~~~~~~~~
@@ -1217,6 +1243,8 @@ Send Coins JSON example
 Request Renewal
 ---------------
 
+Bob has received coins from Alice, and now needs to replace the 'old' coins
+by new ones, based on blinds that he creates.
 
 Request Renewal structure
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1291,6 +1319,7 @@ Request Renewal JSON example
 Received Coins
 --------------
 
+Confirm that Bob has received the coins. Optional Message.
 
 Received Coins structure
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1328,6 +1357,11 @@ Received Coins JSON example
 Request Invalidation
 --------------------
 
+'Redeem' some coins. This is used to send coins back to 
+the issuer, removing them from circulation. Most likely 
+the issuer will credit some form of account of the user. 
+The user will have to authenticate herself by e.g. ssl
+client certificates. 
 
 Request Invalidation structure
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1392,6 +1426,7 @@ Request Invalidation JSON example
 Response Invalidation
 ---------------------
 
+Confirmation that the coins were 'redeemed'
 
 Response Invalidation structure
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1429,6 +1464,9 @@ Response Invalidation JSON example
 Request Resume
 --------------
 
+If one of the Request Minting/Request Renewal messages answered
+with a delay, this message will continue the transaction, effectively
+asking for the delivery of coins.
 
 Request Resume structure
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1465,11 +1503,6 @@ Error codes
     * 2XX SUCCESS
     * 3XX DELAY / TEMPORARY ERROR
     * 4XX PERMANENT ERROR
-
-
-
-
-
 
 
 Potential extensions
@@ -1576,6 +1609,7 @@ Footnotes
 .. [1] The OpenCoin project <http://opencoin.org/>
 .. [2] David Chaum, "Blind signatures for untraceable payments", Advances in Cryptology - Crypto '82, 
         Springer-Verlag (1983), 199-203.
+.. [3] Bencode Wikipedia page <http://en.wikipedia.org/wiki/Bencode>
 
 
 
